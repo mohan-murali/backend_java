@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -115,7 +116,7 @@ public class RetrospectiveController {
 
     @GetMapping("/search")
     public ResponseEntity<List<Retrospective>> searchRetrospectivesByDate(
-            @RequestParam LocalDate date,
+            @RequestParam Date date,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int pageSize) {
         try {
