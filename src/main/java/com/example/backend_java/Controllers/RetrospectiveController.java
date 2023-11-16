@@ -22,7 +22,8 @@ public class RetrospectiveController {
     @PostMapping
     public ResponseEntity<String> createRetrospective(@RequestBody Retrospective retrospective) {
             try {
-                if (retrospective.getDate() == null || retrospective.getParticipants().isEmpty()) {
+                if (retrospective.getDate() == null || retrospective.getParticipants() == null
+                        || retrospective.getParticipants().isEmpty()) {
                     logger.info("Date or participants list was empty");
                     return ResponseEntity.badRequest().body("Date and participants are required.");
                 }
@@ -45,6 +46,9 @@ public class RetrospectiveController {
 
             if (optionalRetrospective.isPresent()) {
                 Retrospective retrospective = optionalRetrospective.get();
+                if( retrospective.getFeedbacks() == null){
+                    retrospective.setFeedbacks(new ArrayList<>());
+                }
                 retrospective.getFeedbacks().add(feedback);
                 return ResponseEntity.ok("Feedback added successfully.");
             } else {
@@ -57,10 +61,9 @@ public class RetrospectiveController {
         }
     }
 
-    @PutMapping
+    @PutMapping("/{name}")
     public ResponseEntity<String> updateFeedback(@PathVariable String name, @RequestBody Feedback feedback){
         try{
-
             var updated = false;
             var optionalRetrospective = retrospectiveRepo.stream()
                     .filter(r -> r.getName().equals(name)).findFirst();
