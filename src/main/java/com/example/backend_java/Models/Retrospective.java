@@ -8,6 +8,12 @@ public class Retrospective {
     private String summary;
     private Date date;
 
+    public Retrospective(String name, String summary, Date date) {
+        this.name = name;
+        this.summary = summary;
+        this.date = date;
+    }
+
     public String getName() {
         return name;
     }

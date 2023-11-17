@@ -1,12 +1,13 @@
 package com.example.backend_java.Models;
 
 public class Feedback {
-    enum Type {
+    public enum Type {
         POSITIVE,
         NEGATIVE,
         IDEA,
         PRAISE
     }
+
     private String name;
     private String body;
     private Type feedback;
