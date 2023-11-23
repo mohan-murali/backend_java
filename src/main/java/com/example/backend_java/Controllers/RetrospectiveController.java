@@ -4,9 +4,12 @@ import com.example.backend_java.Models.Feedback;
 import com.example.backend_java.Models.Retrospective;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -115,19 +118,16 @@ public class RetrospectiveController {
 
     @GetMapping("/search")
     public ResponseEntity<List<Retrospective>> searchRetrospectivesByDate(
-            @RequestParam Date date,
+            @RequestParam("date") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate date,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int pageSize) {
         try {
             var matchedRetrospectives = retrospectiveRepo.stream()
-                    .filter(r -> r.getDate().equals(date))
+                    .filter(r -> r.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(date))
+                    .skip(page).limit(pageSize)
                     .collect(Collectors.toList());
 
-            var paginatedRetrospectives = matchedRetrospectives
-                    .stream().skip(page).limit(pageSize)
-                    .collect(Collectors.toList());
-
-            return ResponseEntity.ok(paginatedRetrospectives);
+            return ResponseEntity.ok(matchedRetrospectives);
         } catch (Exception ex){
             logger.error(ex.getMessage());
             return ResponseEntity.internalServerError().build();
